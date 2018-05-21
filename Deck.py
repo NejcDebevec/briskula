@@ -1,4 +1,4 @@
-import Card
+from Card import Card
 import random
 
 class Deck:
@@ -9,7 +9,7 @@ class Deck:
         self.deck = []
         for color in colors:
             for n in range(len(cards)):
-                self.deck.append(Card.Card(cards[n], values[n], color))
+                self.deck.append(Card(cards[n], values[n], color))
         self.shuffle()
 
     def get_first_card(self):
@@ -18,6 +18,7 @@ class Deck:
         self.main_color = first_card.color
 
         return first_card
+
     def deal_cards(self):
 
         player1_cards = [self.deck.pop(0) for _ in range(3)]
@@ -25,8 +26,14 @@ class Deck:
 
         return (player1_cards, player2_cards)
 
+    def deal_cards_on_turn(self):
+
+        return (self.deck.pop(0), self.deck.pop(0))
+
     def shuffle(self):
         random.shuffle(self.deck)
 
+    def check_if_deck_empty(self):
+        return True if len(self.deck) == 0 else False
 
-
+d = Deck()
