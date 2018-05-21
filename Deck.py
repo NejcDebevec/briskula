@@ -3,17 +3,30 @@ import random
 
 class Deck:
     def __init__(self):
-        barve = ["Spade", "Coppe", "Bastoni", "Danari"]
-        karte = ["As", "Trojka", "Kralj", "Kaval", "Fant", "7", "6", "5", "4", "2"]
-        vrednosti = ["11", "10", "4", "3", "2", "0", "0", "0", "0", "0"]
+        colors = ["Spade", "Coppe", "Bastoni", "Danari"]
+        cards = ["As", "Trojka", "Kralj", "Kaval", "Fant", "7", "6", "5", "4", "2"]
+        values = ["11", "10", "4", "3", "2", "0", "0", "0", "0", "0"]
         self.deck = []
-        for barva in barve:
-            for n in range(len(karte)):
-                self.deck.append(Card(karte[n], vrednosti[n], barva))
+        for color in colors:
+            for n in range(len(cards)):
+                self.deck.append(Card.Card(cards[n], values[n], color))
+        self.shuffle()
+
+    def get_first_card(self):
+
+        first_card = self.deck.pop(0)
+        self.main_color = first_card.color
+
+        return first_card
+    def deal_cards(self):
+
+        player1_cards = [self.deck.pop(0) for _ in range(3)]
+        player2_cards = [self.deck.pop(0) for _ in range(3)]
+
+        return (player1_cards, player2_cards)
 
     def shuffle(self):
-        return random.shuffle(self.deck)
-    
+        random.shuffle(self.deck)
 
 
 
