@@ -1,4 +1,5 @@
 import Card
+import random
 
 class Deck:
     def __init__(self):
@@ -9,4 +10,10 @@ class Deck:
         for barva in barve:
             for n in range(len(karte)):
                 self.deck.append(Card(karte[n], vrednosti[n], barva))
+
+    def shuffle(self):
+        return random.shuffle(self.deck)
+    
+
+
 
