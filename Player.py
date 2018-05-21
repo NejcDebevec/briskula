@@ -1,11 +1,15 @@
 import Deck
 
 class Player:
-    def __init__(self, deck):
+    def __init__(self, deck, name):
+        self.name = name
         self.deck = deck
         self.cards_collected = []
         self.score = 0
         self.current_cards = []
+
+    def __str__(self):
+        print(self.name)
 
     def pickUp_card(self):
         self.current_cards.append("")
@@ -21,6 +25,12 @@ class Player:
 
     def set_cards(self, cards):
         self.current_cards = cards
+
+    def throw_card(self, n):
+        return self.current_cards.pop(n)
+
+
+
 
 
 
