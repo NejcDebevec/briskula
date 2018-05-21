@@ -9,7 +9,7 @@ class Deck:
         self.deck = []
         for color in colors:
             for n in range(len(cards)):
-                self.deck.append(Card(cards[n], values[n], color))
+                self.deck.append(Card(cards[n], values[n], color, 10-cards.index(cards[n])))
         self.shuffle()
 
     def get_first_card(self):

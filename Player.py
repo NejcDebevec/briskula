@@ -8,11 +8,11 @@ class Player:
         self.score = 0
         self.current_cards = []
 
-    def __str__(self):
-        print(self.name)
+    def __repr__(self):
+        return str(self.name)
 
-    def pickUp_card(self):
-        self.current_cards.append("")
+    def pick_up_card(self, card):
+        self.current_cards.append(card)
 
     def add_to_loot(self, card1, card2):
         self.cards_collected.append(card1)
@@ -20,14 +20,14 @@ class Player:
 
     def count_score(self):
         for card in self.cards_collected:
-            self.score += card.value
-        return self.score
+            self.score += int(card.value)
+        return str(self.score)
 
     def set_cards(self, cards):
         self.current_cards = cards
 
     def throw_card(self, n):
-        return self.current_cards.pop(n)
+        return self.current_cards.pop(n-1)
 
 
 

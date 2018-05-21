@@ -1,8 +1,9 @@
 class Card:
-    def __init__(self,card, value, color):
+    def __init__(self,card, value, color, power):
         self.card = card
         self.value = value
         self.color = color
+        self.power = power
 
     def __repr__(self):
-        return (self.card + " " + self.color)
+        return str(self.card + " " + self.color)
