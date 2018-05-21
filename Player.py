@@ -19,5 +19,8 @@ class Player:
             self.score += card.value
         return self.score
 
+    def set_cards(self, cards):
+        self.current_cards = cards
+
 
 
