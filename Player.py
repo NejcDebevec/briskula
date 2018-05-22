@@ -19,6 +19,7 @@ class Player:
         self.cards_collected.append(card2)
 
     def count_score(self):
+        self.score = 0
         for card in self.cards_collected:
             self.score += int(card.value)
         return str(self.score)
@@ -28,6 +29,11 @@ class Player:
 
     def throw_card(self, n):
         return self.current_cards.pop(n-1)
+
+    def check_hand(self):
+        if len(self.current_cards)==0:
+            return True
+        return False;
 
 
 

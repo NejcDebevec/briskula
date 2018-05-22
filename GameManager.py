@@ -36,6 +36,21 @@ class GameManager:
                 first = second
                 second = tmp
 
+            elif card1_playing.color == main_card.color and card2_playing.color == main_card.color:
+                if card1_playing.power > card2_playing.power:
+                    print(first.name + " win the turn.")
+                    first.add_to_loot(card1_playing, card2_playing)
+                    print(first.count_score() + "\n\n")
+
+                elif card1_playing.power < card2_playing.power:
+                    print(second.name + " win the turn.")
+                    second.add_to_loot(card1_playing, card2_playing)
+                    print(second.count_score() + "\n\n")
+
+                    tmp = first
+                    first = second
+                    second = tmp
+
             elif card1_playing.color != main_card.color and card2_playing.color != main_card.color:
                 if card1_playing.color != card2_playing.color:
                     print(first.name + " win the turn.")
@@ -57,10 +72,24 @@ class GameManager:
                         first = second
                         second = tmp
 
+            if self.deck.check_if_deck_empty() is False:
+                card1, card2 = self.deck.deal_cards_on_turn()
+                first.pick_up_card(card1)
+                second.pick_up_card(card2)
+            if second.check_hand():
+                break
 
-            card1, card2 = self.deck.deal_cards_on_turn()
-            first.pick_up_card(card1)
-            second.pick_up_card(card2)
+        print("\n\n")
+        print(first.name +" has collected "+ first.count_score()+" points.")
+        print(second.name + " has collected " + second.count_score() + " points.")
+        print("\n")
+
+        if first.score > second.score:
+            print(first.name+" has won the game because he collected more points!")
+        elif first.score < second.score:
+            print(second.name + " has won the game because he collected more points!")
+        else:
+            print("Game has finished with tied score!")
 
     def deal_cards(self):
         first, second = self.deck.deal_cards()

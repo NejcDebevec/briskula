@@ -16,7 +16,7 @@ class Deck:
 
         first_card = self.deck.pop(0)
         self.main_color = first_card.color
-
+        self.deck.append(first_card)
         return first_card
 
     def deal_cards(self):
