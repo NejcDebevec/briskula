@@ -1,4 +1,6 @@
 from math import *
+import random
+
 
 class Node:
     def __init__(self, state, parent=None):
@@ -43,13 +45,6 @@ class Node:
                 maxNode = self.childNodes[i]
                 maxi = float(self.childNodes[i].wins) / float(self.childNodes[i].visits) + 100 * sqrt(
                     1 * log(self.visits) / self.childNodes[i].visits)
-            """#zelimo najveci umjer u kojem pobjedjuje komp ili najmanjii omjer u kojem pobjedjuje covjek
-            if(maxi<float(self.childNodes[i].wins)/float(self.childNodes[i].visits)and self.childNodes[i].player_na_potezu == 2):
-                maxi = float(self.childNodes[i].wins)/float(self.childNodes[i].visits)
-                maxNode = self.childNodes[i]
-            if(mini>float(self.childNodes[i].wins)/float(self.childNodes[i].visits)and self.childNodes[i].player_na_potezu == 1):
-                mini = float(self.childNodes[i].wins)/float(self.childNodes[i].visits)
-                minNode = self.childNodes[i]"""
         return maxNode
 
     def UCT(self, rootstate, itermax, verbose=False, brojac=-1):
@@ -69,6 +64,7 @@ class Node:
                 node = node.UCTSelectChild()
                 # print state.print1()+" "+str(node.move)+" select"
                 state.DoMove(node.move)
+
                 j += 1
 
                 # Expand
