@@ -1,6 +1,8 @@
 from Node import Node
 from State import State
 from random import randint
+import random
+from math import *
 
 class MonteCarlo:
     def __init__(self, comp, player, main_card, turn, deck):
@@ -12,18 +14,29 @@ class MonteCarlo:
         self.deck = deck
 
     def check_moves(self):
-        root = Node(State(self.comp, self.player))
+        # print("pride")
+        root = Node(State(self.comp, self.player, None))
         for move in root.state.comp.current_cards:
-            child = Node(State(self.comp, self.player), root)
+            child = Node(State(self.comp, self.player, move), root)
             root.add_child(child)
 
-        print(root.children)
-        # root.children = [Node()]
+        # print(root.children)
+
         for a in range(1000):
+            node = random.choice(root.children)
+            print(node.state.move)
             if len(self.player.current_cards)<3:
-                self.random_game("", self.turn, True)
+                node.visits += 1
+                if self.random_game(node.state.move, self.turn, True):
+                    node.wins += 1
+
             else:
-                self.random_game("", self.turn, True)
+                node.visits += 1
+                if self.random_game(node.state.move, self.turn):
+                    node.wins += 1
+
+        for child in root.children:
+            print(child.wins)
 
             # print(a)
 

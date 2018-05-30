@@ -1,6 +1,8 @@
+from Node import Node
 
-class State:
-    def __init__(self, comp, player):
-        self.moves = comp.current_cards
+class State(Node):
+    def __init__(self, comp, player, move):
+        Node.__init__(self)
+        self.move = move
         self.comp = comp
         self.player = player

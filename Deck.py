@@ -7,9 +7,11 @@ class Deck:
         cards = ["As", "Trojka", "Kralj", "Kaval", "Fant", "7", "6", "5", "4", "2"]
         values = ["11", "10", "4", "3", "2", "0", "0", "0", "0", "0"]
         self.deck = []
+        self.all_cards= []
         for color in colors:
             for n in range(len(cards)):
                 self.deck.append(Card(cards[n], values[n], color, 10-cards.index(cards[n])))
+                self.all_cards.append(Card(cards[n], values[n], color, 10-cards.index(cards[n])))
         self.shuffle()
 
     def get_first_card(self):
