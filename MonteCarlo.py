@@ -1,7 +1,7 @@
 import copy
 
 from Node import Node
-from State import State
+from State2 import State2
 from random import randint
 import random
 import Heuristics as heur
@@ -96,9 +96,9 @@ class MonteCarlo:
 
     def check_moves(self):
         # print("pride")
-        root = Node(State(self.comp, self.player, None))
+        root = Node(State2(self.comp, self.player, None))
         for move in root.state.comp.current_cards:
-            child = Node(State(self.comp, self.player, move), root)
+            child = Node(State2(self.comp, self.player, move), root)
             root.add_child(child)
 
         # print(root.children)
