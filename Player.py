@@ -1,13 +1,14 @@
 import Deck
 
 class Player:
-    def __init__(self, deck, name):
+    def __init__(self, deck, name, computer = False):
         self.name = name
         self.deck = deck
         self.cards_collected = []
         self.score = 0
         self.current_cards = []
         self.card_down = ""
+        self.isComputer = computer
 
     def __repr__(self):
         return str(self.name)
@@ -31,12 +32,15 @@ class Player:
         self.current_cards = cards
 
     def throw_card(self, n):
-        return self.current_cards.pop(n-1)
+        if isinstance(n, int):
+            return self.current_cards.pop(n-1)
+        return self.current_cards.pop(self.current_cards.index(n))
+
 
     def check_hand(self):
         if len(self.current_cards)==0:
             return True
-        return False;
+        return False
 
 
 

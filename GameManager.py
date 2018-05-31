@@ -1,21 +1,21 @@
 from Player import Player
 from Deck import Deck
-from Heuristics import *
-from random import randint
-from MonteCarlo import MonteCarlo
+import random
+import Heuristics as heur
+import MonteCarlo as MC
 class GameManager:
     def __init__(self):
         self.deck = Deck()
         self.allcards = self.deck.all_cards
-        self.player1 = Player(self.deck, "Player1")
-        self.player2 = Player(self.deck, "Player2")
-        self.used_cards= []
+        self.player = Player(self.deck, "Player")
+        self.computer = Player(self.deck, "Computer", True)
+        self.used_cards = []
 
 
     def deal_cards(self):
         first, second = self.deck.deal_cards()
-        self.player1.set_cards(first)
-        self.player2.set_cards(second)
+        self.player.set_cards(first)
+        self.computer.set_cards(second)
 
     def test(self):
         self.deal_cards()
@@ -23,99 +23,128 @@ class GameManager:
 
         # for card in self.deck.deck:
         #     print(card)
-        card = self.player1.current_cards[0]
+        card = self.player.current_cards[0]
         # better_cards_in_game(card,self.used_cards,self.player1.current_cards,self.allcards, main_card)
         # print(main_card)
         # check_main_power(main_card,self.used_cards,self.player1.current_cards,self.allcards)
 
+    def random_starter(self,f,s):
+        i = random.choice([0,1])
+        if i == 0:
+            return f,s
+        return s,f
+
     def game(self):
         self.deal_cards()
-        main_card = self.deck.get_first_card()
-        first = self.player1
-        second = self.player2
+        self.main_card = self.deck.get_first_card()
+        self.first, self.second = self.random_starter(self.player,self.computer)
 
-        monte = MonteCarlo(self.player1, self.player2,1,main_card,self.deck)
-        monte.check_moves()
         while True:
-            player1_pick = input("It's "+first.name+" turn to play,\n(Main card is "+str(main_card)+") select number from 1 to 3,\n"
-                                            +str(first.current_cards) +" \nwhich card in deck you want to play: ")
-            card1_playing = first.throw_card(int(player1_pick))
-            first.card_down = card1_playing
-            print(card1_playing)
-            player2_pick = input("It's "+second.name+" turn to play,\n(Main card is "+str(main_card)+") select number from 1 to 3,\n"
-                                                                                + str(second.current_cards)+"\n which card in deck you want to play: ")
-            card2_playing = second.throw_card(int(player2_pick))
-            second.card_down = card2_playing
+            mc = MC.MonteCarlo(self,self.first.isComputer)
+            if(self.first.isComputer):
+                player1_pick = mc.start_mc()
+                player1_pick = 0
+                card1_playing = self.first.throw_card(int(player1_pick))
+                self.first.card_down = card1_playing
+                print(card1_playing)
+                player2_pick = input("It's " + self.second.name + " turn to play,\n(Main card is " + str(
+                    self.main_card) + ") select number from 1 to 3,\n"+str(self.second.current_cards) +" \nwhich card in deck you want to play: ")
+
+            else:
+
+                player1_pick = input("It's "+self.first.name+" turn to play,\n(Main card is "+str(self.main_card)+") select number from 1 to 3,\n"
+                                                +str(self.first.current_cards) +" \nwhich card in deck you want to play: ")
+                card1_playing = self.first.throw_card(int(player1_pick))
+                self.first.card_down = card1_playing
+                print(card1_playing)
+                # player2_pick = najdi najboljšo karto za izbrat(poženi montecarlo)
+                player2_pick = mc.start_mc(card1_playing)
+                player2_pick = 0
+            card2_playing = self.second.throw_card(int(player2_pick))
+            self.second.card_down = card2_playing
 
             print(card2_playing)
-            if card1_playing.color == main_card.color and card2_playing.color != main_card.color:
-                print(first.name+" win the turn.")
-                first.add_to_loot(card1_playing, card2_playing)
-                print(first.count_score()+"\n\n")
 
-            elif card1_playing.color != main_card.color and card2_playing.color == main_card.color:
-                print(second.name + " win the turn.")
-                second.add_to_loot(card1_playing, card2_playing)
-                print(second.count_score()+"\n\n")
+            if heur.check_cards(card1_playing,card2_playing,self.main_card):
+                print(self.first.name + " win the turn.")
+                self.first.add_to_loot(card1_playing, card2_playing)
+                print(self.first.count_score()+"\n\n")
+            else:
+                print(self.second.name + " win the turn.")
+                self.second.add_to_loot(card1_playing, card2_playing)
+                print(self.second.count_score()+"\n\n")
+                tmp = self.first
+                self.first = self.second
+                self.second = tmp
 
-                tmp = first
-                first = second
-                second = tmp
-
-            elif card1_playing.color == main_card.color and card2_playing.color == main_card.color:
-                if card1_playing.power > card2_playing.power:
-                    print(first.name + " win the turn.")
-                    first.add_to_loot(card1_playing, card2_playing)
-                    print(first.count_score() + "\n\n")
-
-                elif card1_playing.power < card2_playing.power:
-                    print(second.name + " win the turn.")
-                    second.add_to_loot(card1_playing, card2_playing)
-                    print(second.count_score() + "\n\n")
-
-                    tmp = first
-                    first = second
-                    second = tmp
-
-            elif card1_playing.color != main_card.color and card2_playing.color != main_card.color:
-                if card1_playing.color != card2_playing.color:
-                    print(first.name + " win the turn.")
-                    first.add_to_loot(card1_playing, card2_playing)
-                    print(first.count_score() + "\n\n")
-
-                elif card1_playing.color == card2_playing.color:
-                    if card1_playing.power > card2_playing.power:
-                        print(first.name + " win the turn.")
-                        first.add_to_loot(card1_playing, card2_playing)
-                        print(first.count_score() + "\n\n")
-
-                    elif card1_playing.power < card2_playing.power:
-                        print(second.name + " win the turn.")
-                        second.add_to_loot(card1_playing, card2_playing)
-                        print(second.count_score() + "\n\n")
-
-                        tmp = first
-                        first = second
-                        second = tmp
+            # if card1_playing.color == main_card.color and card2_playing.color != main_card.color:
+            #     print(self.first.name+" win the turn.")
+            #     self.first.add_to_loot(card1_playing, card2_playing)
+            #     print(self.first.count_score()+"\n\n")
+            #
+            # elif card1_playing.color != main_card.color and card2_playing.color == main_card.color:
+            #     print(second.name + " win the turn.")
+            #     second.add_to_loot(card1_playing, card2_playing)
+            #     print(second.count_score()+"\n\n")
+            #
+            #     tmp = self.first
+            #     self.first = second
+            #     second = tmp
+            #
+            # elif card1_playing.color == main_card.color and card2_playing.color == main_card.color:
+            #     if card1_playing.power > card2_playing.power:
+            #         print(self.first.name + " win the turn.")
+            #         self.first.add_to_loot(card1_playing, card2_playing)
+            #         print(self.first.count_score() + "\n\n")
+            #
+            #     elif card1_playing.power < card2_playing.power:
+            #         print(second.name + " win the turn.")
+            #         second.add_to_loot(card1_playing, card2_playing)
+            #         print(second.count_score() + "\n\n")
+            #
+            #         tmp = self.first
+            #         self.first = second
+            #         second = tmp
+            #
+            # elif card1_playing.color != main_card.color and card2_playing.color != main_card.color:
+            #     if card1_playing.color != card2_playing.color:
+            #         print(self.first.name + " win the turn.")
+            #         self.first.add_to_loot(card1_playing, card2_playing)
+            #         print(self.first.count_score() + "\n\n")
+            #
+            #     elif card1_playing.color == card2_playing.color:
+            #         if card1_playing.power > card2_playing.power:
+            #             print(self.first.name + " win the turn.")
+            #             self.first.add_to_loot(card1_playing, card2_playing)
+            #             print(self.first.count_score() + "\n\n")
+            #
+            #         elif card1_playing.power < card2_playing.power:
+            #             print(second.name + " win the turn.")
+            #             second.add_to_loot(card1_playing, card2_playing)
+            #             print(second.count_score() + "\n\n")
+            #
+            #             tmp = self.first
+            #             self.first = second
+            #             second = tmp
             self.used_cards.append(card1_playing)
             self.used_cards.append(card2_playing)
 
             if self.deck.check_if_deck_empty() is False:
                 card1, card2 = self.deck.deal_cards_on_turn()
-                first.pick_up_card(card1)
-                second.pick_up_card(card2)
-            if second.check_hand():
+                self.first.pick_up_card(card1)
+                self.second.pick_up_card(card2)
+            if self.second.check_hand():
                 break
 
         print("\n\n")
-        print(first.name +" has collected "+ first.count_score()+" points.")
-        print(second.name + " has collected " + second.count_score() + " points.")
+        print(self.first.name +" has collected "+ self.first.count_score()+" points.")
+        print(self.second.name + " has collected " + self.second.count_score() + " points.")
         print("\n")
 
-        if first.score > second.score:
-            print(first.name+" has won the game because he collected more points!")
-        elif first.score < second.score:
-            print(second.name + " has won the game because he collected more points!")
+        if self.first.score > self.second.score:
+            print(self.first.name+" has won the game because he collected more points!")
+        elif self.first.score < self.second.score:
+            print(self.second.name + " has won the game because he collected more points!")
         else:
             print("Game has finished with tied score!")
 
@@ -203,7 +232,7 @@ class GameManager:
 
 
 game = GameManager()
-game.test()
+game.game()
 
 
 # print(game.player1.current_cards)

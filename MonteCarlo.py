@@ -1,17 +1,98 @@
+import copy
+
 from Node import Node
 from State import State
 from random import randint
 import random
+import Heuristics as heur
 from math import *
 
 class MonteCarlo:
-    def __init__(self, comp, player, main_card, turn, deck):
+    def __init__(self, gameManager,turn):
         self.start = 0
-        self.comp = comp
-        self.player = player
-        self.main_card = main_card
+        self.GM = gameManager
+        self.comp = gameManager.computer
+        self.player = gameManager.player
+        self.main_card = gameManager.main_card
+        # true if computer turn
         self.turn = turn
-        self.deck = deck
+        self.deck = gameManager.deck
+
+    def start_mc(self, player_played = None):
+        root = Node(self.GM)
+
+        for i,move in enumerate(self.comp.current_cards):
+            c = 0
+            parent = root
+            while(True):
+                print(c)
+                c+=1
+
+                GMcopy = copy.deepcopy(parent.state)
+                if c == 1:
+                    comp_card = GMcopy.computer.throw_card(i + 1)
+                    if player_played:
+                        player_card = player_played
+                    else:
+                        player_card = GMcopy.player.throw_card(
+                            random.choice([i + 1 for i in range(len(GMcopy.player.current_cards))]))
+                else:
+                    player_card = GMcopy.player.throw_card(
+                        random.choice([i + 1 for i in range(len(GMcopy.player.current_cards))]))
+
+                    comp_card = GMcopy.computer.throw_card(random.choice([i+1 for i in range(len(GMcopy.computer.current_cards))]))
+
+
+
+
+                if (self.turn):
+                    winner = heur.check_cards(comp_card, player_card, GMcopy.main_card)
+                else:
+                    winner = heur.check_cards(player_card,comp_card,GMcopy.main_card)
+
+                #computer wins
+                if((winner and self.turn) or (not winner and not self.turn)):
+                    GMcopy.computer.add_to_loot(comp_card, player_card)
+                    GMcopy.first = GMcopy.computer
+                    GMcopy.second = GMcopy.player
+                    self.turn = True
+                else:
+                    GMcopy.player.add_to_loot(comp_card, player_card)
+                    GMcopy.second = GMcopy.computer
+                    GMcopy.first = GMcopy.player
+                    self.turn = False
+
+
+                GMcopy.used_cards.append(comp_card)
+                GMcopy.used_cards.append(player_card)
+
+                if GMcopy.deck.check_if_deck_empty() is False:
+                    card1, card2 = GMcopy.deck.deal_cards_on_turn()
+                    GMcopy.computer.pick_up_card(card1)
+                    GMcopy.player.pick_up_card(card2)
+
+                child = Node(GMcopy, parent)
+                parent.add_child(child)
+                if c == 17:
+                    print(1)
+                if GMcopy.second.check_hand():
+                    self.backpropagate(child)
+                    break
+                parent = child
+
+
+
+        pass
+
+    def backpropagate(self,node):
+        score = True if node.state.computer.score > node.state.player.score else False
+        while node != None:  # backpropagate from the expanded node and work back to the root node
+            if (node.parent != None):
+                node.update(score)  # state is terminal. Update node with result from POV of node.player_na_potezu
+            else:
+                node.update(score)
+            node = node.parent
+
 
     def check_moves(self):
         # print("pride")
@@ -46,7 +127,7 @@ class MonteCarlo:
         if leftOver:
             card1_playing = self.player.card_down
             card2_playing = move
-            if self.check_cards(card1_playing, card2_playing, main_card):
+            if heur.check_cards(card1_playing, card2_playing, main_card):
                 turn = 2
             else:
                 turn = 1
@@ -69,7 +150,7 @@ class MonteCarlo:
             card2_playing = second.throw_card(int(player2_pick))
             print(card2_playing)
 
-            if self.check_cards(card1_playing, card2_playing):
+            if heur.check_cards(card1_playing, card2_playing):
                 first.add_to_loot(card1_playing, card2_playing)
             else:
                 second.add_to_loot(card1_playing, card2_playing)
@@ -89,31 +170,6 @@ class MonteCarlo:
             print(second.name + " has won the game because he collected more points!")
         else:
             print("Game has finished with tied score!")
-
-    def check_cards(self, card1_playing, card2_playing, main_card):
-        if card1_playing.color == main_card.color and card2_playing.color != main_card.color:
-            return True
-
-        elif card1_playing.color != main_card.color and card2_playing.color == main_card.color:
-            return False
-
-        elif card1_playing.color == main_card.color and card2_playing.color == main_card.color:
-            if card1_playing.power > card2_playing.power:
-                return True
-
-            elif card1_playing.power < card2_playing.power:
-                return False
-
-        elif card1_playing.color != main_card.color and card2_playing.color != main_card.color:
-            if card1_playing.color != card2_playing.color:
-                return True
-
-            elif card1_playing.color == card2_playing.color:
-                if card1_playing.power > card2_playing.power:
-                    return True
-
-                elif card1_playing.power < card2_playing.power:
-                    return False
 
     def update(self):
         return 0

@@ -1,29 +1,27 @@
 from math import *
 
 class Node:
-    def __init__(self, state, parent=None):
+    def __init__(self, gameState, parent=None):
         self.visits = 1
         self.value = 0.0
         self.wins = 0
-        self.state = state
+        self.state = gameState
         # self.move =
         self.children = []
         self.parent = parent
         self.turn = 0
-        self.untriedMoves = state.GetMoves()  # future child nodes
-        self.player_on_turn = state.player_na_potezu  # the only part of the state that the Node needs later
-        self.points = state.bodovi
-        self.player_starts = state.player_na_potezu
+        #self.untriedMoves = state.GetMoves()  # future child nodes
+        #self.player_on_turn = state.player_na_potezu  # the only part of the state that the Node needs later
+        #self.points = state.bodovi
+        #self.player_starts = state.player_na_potezu
 
     def visited(self):
         self.visits += 1
 
     def add_child(self, child_state):
-        child = Node(child_state, self)
-        self.children.append(child)
+        self.children.append(child_state)
 
-    def update(self, value, win):
-        # self.value += value
+    def update(self, win):
         self.visits += 1
         if win:
             self.wins += 1
