@@ -32,6 +32,7 @@ def check_main_power(used_card, used_cards, player_cards, all_cards):
                     all += 1
     print(all)
 
+
 def check_cards(card1_playing, card2_playing, main_card):
     if card1_playing.color == main_card.color and card2_playing.color != main_card.color:
         return True

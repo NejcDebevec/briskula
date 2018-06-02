@@ -32,10 +32,13 @@ class MinMax:
         for x in self.tree.children:
             if x.card.color == card.color and x.card.power == card.power:
                 return x
+
     def update(self,card):
         self.tree = self.find_card(card)
+
     def enemy_move(self,card):
         self.tree = self.find_card(card)
+
     def find_best(self):
         for x in self.tree.children:
             if x.value == self.tree.value:
@@ -109,10 +112,10 @@ class MinMax:
 
                         if (not computer_level_winner[0] and not turn_winner_1) or (computer_level_winner[0] and turn_winner_1):
                             computer_level_winner_2.append(True)
-                            computer_values_2.append(val2)
+                            computer_values_2.append(int(val2))
                         else:
                             computer_level_winner_2.append(False)
-                            computer_values_2.append(-val2)
+                            computer_values_2.append(-int(val2))
 
 
                         if(computer_level_winner_2[1]):
@@ -126,7 +129,7 @@ class MinMax:
 
                         n_2.children.append(n_3)
 
-                        val3 = get_value(turn_1_loser_cards_3[0], turn_1_winner_cards_2[0])
+                        val3 = int(get_value(turn_1_loser_cards_3[0], turn_1_winner_cards_2[0]))
 
                         if (not computer_level_winner_2[1] and not turn_winner_2) or (
                                 computer_level_winner_2[1] and turn_winner_2):
@@ -137,7 +140,7 @@ class MinMax:
                             computer_values_2.append(-val3)
 
 
-                        n_3.value = sum(computer_values_2)
+                        n_3.value = int(sum(computer_values_2))
                         last_level_nodes.append(n_3)
         if card_down:
             self.doMiniMax(last_level_nodes, True, 4)
@@ -147,7 +150,6 @@ class MinMax:
         if self.turn:
             self.enemy_move(self.turn)
         print("")
-
 
     def doMiniMax(self,last, minOrMax, depth = 4):
         if minOrMax:
@@ -176,16 +178,17 @@ class MinMax:
 
 
 def get_value(c1,c2):
-    return c1.value + c2.value
+    return int(c1.value + c2.value)
+
 #mm = MinMax([Card("3",10,"Denar",9),Card("5",0,"Kopa",3),Card("12",3,"Bašton",7)],[Card("3",10,"Bašton",9),Card("7",0,"Špada",5),Card("11",2,"Bašton",6)],Card("2",0,"Kopa",1))
-mm = MinMax([Card("5",0,"Kopa",3),Card("11",2,"Špada",6)],[Card("3",10,"Denar",9),Card("2",0,"Špada",5),Card("13",4,"Kopa",8)],Card("11",0,"Špada",1),Card("3",10,"Kopa",9))
-best = mm.find_best()
-best2 = mm.find_best()
-mm.enemy_move(Card("12",3,"Bašton",7))
-
-
-# Find_best poišče najboljšo za komp
-# Enemy_move naredi move enemyja
-# Če je enemy začel prvi krog(torej krogi so trije), je že vrgel karto, kar pomeni, da je to treba zapisati v tretji atribut classa MinMax
-# Z izpisom končnega rezultata treh krogov se nisem zajebaval, ker tega itak ne rabmo
-print(mm.tree.value)
+# mm = MinMax([Card("5",0,"Kopa",3),Card("11",2,"Špada",6)],[Card("3",10,"Denar",9),Card("2",0,"Špada",5),Card("13",4,"Kopa",8)],Card("11",0,"Špada",1),Card("3",10,"Kopa",9))
+# best = mm.find_best()
+# best2 = mm.find_best()
+# mm.enemy_move(Card("12",3,"Bašton",7))
+#
+#
+# # Find_best poišče najboljšo za komp
+# # Enemy_move naredi move enemyja
+# # Če je enemy začel prvi krog(torej krogi so trije), je že vrgel karto, kar pomeni, da je to treba zapisati v tretji atribut classa MinMax
+# # Z izpisom končnega rezultata treh krogov se nisem zajebaval, ker tega itak ne rabmo
+# print(mm.tree.value)

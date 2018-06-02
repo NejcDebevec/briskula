@@ -32,9 +32,10 @@ class Player:
         self.current_cards = cards
 
     def throw_card(self, n):
-        if isinstance(n, int):
-            return self.current_cards.pop(n-1)
-        return self.current_cards.pop(self.current_cards.index(n))
+        # print(n, len(self.current_cards))
+        # if isinstance(n, int):
+        return self.current_cards.pop(n-1)
+        # return self.current_cards.pop(self.current_cards.index(n))
 
 
     def check_hand(self):

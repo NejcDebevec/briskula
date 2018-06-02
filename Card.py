@@ -7,3 +7,6 @@ class Card:
 
     def __repr__(self):
         return str(self.card + " " + self.color)
+
+    # def __lt__(self, other):
+    #     return self.

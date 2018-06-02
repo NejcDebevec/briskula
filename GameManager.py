@@ -3,6 +3,9 @@ from Deck import Deck
 import random
 import Heuristics as heur
 import MonteCarlo as MC
+from MinMax import MinMax as MM
+
+
 class GameManager:
     def __init__(self):
         self.deck = Deck()
@@ -10,7 +13,6 @@ class GameManager:
         self.player = Player(self.deck, "Player")
         self.computer = Player(self.deck, "Computer", True)
         self.used_cards = []
-
 
     def deal_cards(self):
         first, second = self.deck.deal_cards()
@@ -38,18 +40,47 @@ class GameManager:
         self.deal_cards()
         self.main_card = self.deck.get_first_card()
         self.first, self.second = self.random_starter(self.player,self.computer)
-
+        mm = None
         while True:
-            mc = MC.MonteCarlo(self,self.first.isComputer)
-            if(self.first.isComputer):
-                player1_pick = mc.start_mc()
-                player1_pick = 0
-                card1_playing = self.first.throw_card(int(player1_pick))
+            mc = MC.MonteCarlo(self, self.first.isComputer)
+
+            if self.first.isComputer:
+                if self.deck.check_if_deck_empty():
+                    if mm is None:
+                        if self.first.isComputer:
+                            comp = self.first.current_cards
+                            player = self.second.current_cards
+                            mm = MM(player, comp, self.main_card)
+                            card_rand = mm.find_best().card
+                    else:
+                        card_rand = mm.find_best().card
+                        # else:
+                        #     comp = self.second.current_cards
+                        #     player = self.first.current_cards
+                else:
+                    # if len(self.first.current_cards) > 1:
+                    card_rand = mc.MC_random(200)
+                # else:
+                #     card_rand = self.first.current_cards[0]
+                # card_rand = mc.MC_random(200)
+                index = -1
+                for n,card in enumerate(self.first.current_cards):
+                    if card.color == card_rand.color:
+                        if card.power == card_rand.power:
+                            index = n
+                        # break
+
+                card1_playing = self.first.throw_card(int(index+1))
                 self.first.card_down = card1_playing
                 print(card1_playing)
+
                 player2_pick = input("It's " + self.second.name + " turn to play,\n(Main card is " + str(
                     self.main_card) + ") select number from 1 to 3,\n"+str(self.second.current_cards) +" \nwhich card in deck you want to play: ")
-
+                card2_playing = self.second.throw_card(int(player2_pick))
+                if mm is not None and self.deck.check_if_deck_empty():
+                    mm.enemy_move(card2_playing)
+                print(card2_playing)
+                self.second.card_down = card2_playing
             else:
 
                 player1_pick = input("It's "+self.first.name+" turn to play,\n(Main card is "+str(self.main_card)+") select number from 1 to 3,\n"
@@ -58,14 +89,34 @@ class GameManager:
                 self.first.card_down = card1_playing
                 print(card1_playing)
                 # player2_pick = najdi najboljšo karto za izbrat(poženi montecarlo)
-                player2_pick = mc.start_mc(card1_playing)
-                player2_pick = 0
-            card2_playing = self.second.throw_card(int(player2_pick))
-            self.second.card_down = card2_playing
+                # player2_pick = mc.start_mc(card1_playing)
+                if self.deck.check_if_deck_empty():
+                    if mm is None:
+                            comp = self.second.current_cards
+                            player = self.first.current_cards
+                            mm = MM(player, comp, self.main_card, card1_playing)
+                    else:
+                        mm.enemy_move(card1_playing)
+                    card_rand = mm.find_best().card
+                else:
+                # if len(self.second.current_cards) > 1:
+                    card_rand = mc.MC_random(200)
+                index = -1
+                for n, card in enumerate(self.second.current_cards):
+                    if card.color == card_rand.color:
+                        if card.power == card_rand.power:
+                            index = n
+                            # break
+                # print(card_rand, "card", self.second.current_cards)
+                # player2_pick = self.second.current_cards.index(index+1)
+                # print(player2_pick)
 
-            print(card2_playing)
+                card2_playing = self.second.throw_card(int(index+1))
+                self.second.card_down = card2_playing
 
-            if heur.check_cards(card1_playing,card2_playing,self.main_card):
+                print(card2_playing)
+
+            if heur.check_cards(card1_playing,card2_playing, self.main_card):
                 print(self.first.name + " win the turn.")
                 self.first.add_to_loot(card1_playing, card2_playing)
                 print(self.first.count_score()+"\n\n")
@@ -133,6 +184,7 @@ class GameManager:
                 card1, card2 = self.deck.deal_cards_on_turn()
                 self.first.pick_up_card(card1)
                 self.second.pick_up_card(card2)
+
             if self.second.check_hand():
                 break
 
@@ -149,7 +201,7 @@ class GameManager:
             print("Game has finished with tied score!")
 
 
-
+    # def finish_with_min_max()
     # def random_game(self, move):
     #         self.deal_cards()
     #         main_card = self.deck.get_first_card()

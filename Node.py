@@ -3,12 +3,12 @@ import random
 
 
 class Node:
-    def __init__(self, gameState, parent=None):
-        self.visits = 1
+    def __init__(self, gameState,move, parent=None):
+        self.visits = 0
         self.value = 0.0
         self.wins = 0
         self.state = gameState
-        # self.move =
+        self.move = move
         self.children = []
         self.parent = parent
         self.turn = 0
