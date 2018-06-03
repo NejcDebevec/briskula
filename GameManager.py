@@ -53,7 +53,10 @@ class GameManager:
                             mm = MM(player, comp, self.main_card)
                             card_rand = mm.find_best().card
                     else:
-                        card_rand = mm.find_best().card
+                        if len(self.first.current_cards) != 1:
+                            card_rand = mm.find_best().card
+                        else:
+                            card_rand = self.first.current_cards[0]
                         # else:
                         #     comp = self.second.current_cards
                         #     player = self.first.current_cards
@@ -77,7 +80,7 @@ class GameManager:
                 player2_pick = input("It's " + self.second.name + " turn to play,\n(Main card is " + str(
                     self.main_card) + ") select number from 1 to 3,\n"+str(self.second.current_cards) +" \nwhich card in deck you want to play: ")
                 card2_playing = self.second.throw_card(int(player2_pick))
-                if mm is not None and self.deck.check_if_deck_empty():
+                if mm is not None and self.deck.check_if_deck_empty() and len(self.second.current_cards) != 0:
                     mm.enemy_move(card2_playing)
                 print(card2_playing)
                 self.second.card_down = card2_playing
@@ -96,8 +99,13 @@ class GameManager:
                             player = self.first.current_cards
                             mm = MM(player, comp, self.main_card, card1_playing)
                     else:
-                        mm.enemy_move(card1_playing)
-                    card_rand = mm.find_best().card
+                        if len(self.first.current_cards) != 0:
+                            mm.enemy_move(card1_playing)
+
+                    if len(self.second.current_cards) != 1:
+                        card_rand = mm.find_best().card
+                    else:
+                        card_rand = self.second.current_cards[0]
                 else:
                 # if len(self.second.current_cards) > 1:
                     card_rand = mc.MC_random(200)
