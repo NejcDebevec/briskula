@@ -179,7 +179,7 @@ class MinMax:
 
 
 def get_value(c1,c2):
-    return int(c1.value + c2.value)
+    return int(c1.value) + int(c2.value)
 
 #mm = MinMax([Card("3",10,"Denar",9),Card("5",0,"Kopa",3),Card("12",3,"Bašton",7)],[Card("3",10,"Bašton",9),Card("7",0,"Špada",5),Card("11",2,"Bašton",6)],Card("2",0,"Kopa",1))
 # mm = MinMax([Card("5",0,"Kopa",3),Card("11",2,"Špada",6)],[Card("3",10,"Denar",9),Card("2",0,"Špada",5),Card("13",4,"Kopa",8)],Card("11",0,"Špada",1),Card("3",10,"Kopa",9))
