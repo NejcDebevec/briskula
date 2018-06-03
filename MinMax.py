@@ -149,6 +149,7 @@ class MinMax:
         self.tree = root
         if self.turn:
             self.enemy_move(self.turn)
+            self.first_cards.pop(len(self.first_cards)-1)
         print("")
 
     def doMiniMax(self,last, minOrMax, depth = 4):

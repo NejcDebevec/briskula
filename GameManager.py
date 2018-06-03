@@ -47,11 +47,10 @@ class GameManager:
             if self.first.isComputer:
                 if self.deck.check_if_deck_empty():
                     if mm is None:
-                        if self.first.isComputer:
-                            comp = self.first.current_cards
-                            player = self.second.current_cards
-                            mm = MM(player, comp, self.main_card)
-                            card_rand = mm.find_best().card
+                        comp = self.first.current_cards
+                        player = self.second.current_cards
+                        mm = MM(player, comp, self.main_card)
+                        card_rand = mm.find_best().card
                     else:
                         if len(self.first.current_cards) != 1:
                             card_rand = mm.find_best().card
@@ -80,12 +79,13 @@ class GameManager:
                 player2_pick = input("It's " + self.second.name + " turn to play,\n(Main card is " + str(
                     self.main_card) + ") select number from 1 to 3,\n"+str(self.second.current_cards) +" \nwhich card in deck you want to play: ")
                 card2_playing = self.second.throw_card(int(player2_pick))
-                if mm is not None and self.deck.check_if_deck_empty() and len(self.second.current_cards) != 0:
+                if mm is not None and self.deck.check_if_deck_empty() and len(self.second.current_cards) != 1:
                     mm.enemy_move(card2_playing)
                 print(card2_playing)
                 self.second.card_down = card2_playing
             else:
-
+                if self.deck.check_if_deck_empty():
+                    print(1)
                 player1_pick = input("It's "+self.first.name+" turn to play,\n(Main card is "+str(self.main_card)+") select number from 1 to 3,\n"
                                                 +str(self.first.current_cards) +" \nwhich card in deck you want to play: ")
                 card1_playing = self.first.throw_card(int(player1_pick))
