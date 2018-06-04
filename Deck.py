@@ -28,6 +28,13 @@ class Deck:
 
         return (player1_cards, player2_cards)
 
+    def random_shuffle(self):
+        main = self.deck.pop(len(self.deck)-1)
+
+        self.deck = random.shuffle(self.deck)
+        self.deck.append(main)
+
+
     def deal_cards_on_turn(self):
 
         return (self.deck.pop(0), self.deck.pop(0))

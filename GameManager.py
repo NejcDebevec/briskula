@@ -13,6 +13,7 @@ class GameManager:
         self.player = Player(self.deck, "Player")
         self.computer = Player(self.deck, "Computer", True)
         self.used_cards = []
+        self.iteration = 1000
 
     def deal_cards(self):
         first, second = self.deck.deal_cards()
@@ -61,7 +62,7 @@ class GameManager:
                         #     player = self.first.current_cards
                 else:
                     # if len(self.first.current_cards) > 1:
-                    card_rand = mc.MC_random(200)
+                    card_rand = mc.MC_random(self.iteration)
                 # else:
                 #     card_rand = self.first.current_cards[0]
                 # card_rand = mc.MC_random(200)
@@ -74,23 +75,29 @@ class GameManager:
 
                 card1_playing = self.first.throw_card(int(index+1))
                 self.first.card_down = card1_playing
-                print(card1_playing)
+                print("")
+                print(self.first.name+" played: "+str(card1_playing))
+                print("")
 
                 player2_pick = input("It's " + self.second.name + " turn to play,\n(Main card is " + str(
                     self.main_card) + ") select number from 1 to 3,\n"+str(self.second.current_cards) +" \nwhich card in deck you want to play: ")
                 card2_playing = self.second.throw_card(int(player2_pick))
                 if mm is not None and self.deck.check_if_deck_empty() and len(self.second.current_cards) != 1:
                     mm.enemy_move(card2_playing)
-                print(card2_playing)
+                print("")
+                print(self.second.name+" played: "+str(card2_playing))
+                print("")
                 self.second.card_down = card2_playing
             else:
-                if self.deck.check_if_deck_empty():
-                    print(1)
+                # if self.deck.check_if_deck_empty():
+                #     print(1)
                 player1_pick = input("It's "+self.first.name+" turn to play,\n(Main card is "+str(self.main_card)+") select number from 1 to 3,\n"
                                                 +str(self.first.current_cards) +" \nwhich card in deck you want to play: ")
                 card1_playing = self.first.throw_card(int(player1_pick))
                 self.first.card_down = card1_playing
-                print(card1_playing)
+                print("")
+                print(self.first.name + " played: " + str(card1_playing))
+                print("")
                 # player2_pick = najdi najboljšo karto za izbrat(poženi montecarlo)
                 # player2_pick = mc.start_mc(card1_playing)
                 if self.deck.check_if_deck_empty():
@@ -108,7 +115,7 @@ class GameManager:
                         card_rand = self.second.current_cards[0]
                 else:
                 # if len(self.second.current_cards) > 1:
-                    card_rand = mc.MC_random(200)
+                    card_rand = mc.MC_random(self.iteration)
                 index = -1
                 for n, card in enumerate(self.second.current_cards):
                     if card.color == card_rand.color:
@@ -122,7 +129,9 @@ class GameManager:
                 card2_playing = self.second.throw_card(int(index+1))
                 self.second.card_down = card2_playing
 
-                print(card2_playing)
+                print("")
+                print(self.second.name + " played: " + str(card2_playing))
+                print("")
 
             if heur.check_cards(card1_playing,card2_playing, self.main_card):
                 print(self.first.name + " win the turn.")
@@ -136,55 +145,6 @@ class GameManager:
                 self.first = self.second
                 self.second = tmp
 
-            # if card1_playing.color == main_card.color and card2_playing.color != main_card.color:
-            #     print(self.first.name+" win the turn.")
-            #     self.first.add_to_loot(card1_playing, card2_playing)
-            #     print(self.first.count_score()+"\n\n")
-            #
-            # elif card1_playing.color != main_card.color and card2_playing.color == main_card.color:
-            #     print(second.name + " win the turn.")
-            #     second.add_to_loot(card1_playing, card2_playing)
-            #     print(second.count_score()+"\n\n")
-            #
-            #     tmp = self.first
-            #     self.first = second
-            #     second = tmp
-            #
-            # elif card1_playing.color == main_card.color and card2_playing.color == main_card.color:
-            #     if card1_playing.power > card2_playing.power:
-            #         print(self.first.name + " win the turn.")
-            #         self.first.add_to_loot(card1_playing, card2_playing)
-            #         print(self.first.count_score() + "\n\n")
-            #
-            #     elif card1_playing.power < card2_playing.power:
-            #         print(second.name + " win the turn.")
-            #         second.add_to_loot(card1_playing, card2_playing)
-            #         print(second.count_score() + "\n\n")
-            #
-            #         tmp = self.first
-            #         self.first = second
-            #         second = tmp
-            #
-            # elif card1_playing.color != main_card.color and card2_playing.color != main_card.color:
-            #     if card1_playing.color != card2_playing.color:
-            #         print(self.first.name + " win the turn.")
-            #         self.first.add_to_loot(card1_playing, card2_playing)
-            #         print(self.first.count_score() + "\n\n")
-            #
-            #     elif card1_playing.color == card2_playing.color:
-            #         if card1_playing.power > card2_playing.power:
-            #             print(self.first.name + " win the turn.")
-            #             self.first.add_to_loot(card1_playing, card2_playing)
-            #             print(self.first.count_score() + "\n\n")
-            #
-            #         elif card1_playing.power < card2_playing.power:
-            #             print(second.name + " win the turn.")
-            #             second.add_to_loot(card1_playing, card2_playing)
-            #             print(second.count_score() + "\n\n")
-            #
-            #             tmp = self.first
-            #             self.first = second
-            #             second = tmp
             self.used_cards.append(card1_playing)
             self.used_cards.append(card2_playing)
 

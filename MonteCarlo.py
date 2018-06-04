@@ -25,10 +25,11 @@ class MonteCarlo:
             c = 0
             parent = root
             while True:
-                print(c)
+                # print(c)
                 c+=1
 
                 GMcopy = copy.deepcopy(parent.state)
+                GMcopy.deck.random_shuffle()
                 if c == 1:
                     comp_card = GMcopy.computer.throw_card(i + 1)
                     if player_played:
@@ -117,7 +118,7 @@ class MonteCarlo:
         for child in root.children:
             results.append(((child.wins/child.visits), child.visits, child.move))
             # print((child.wins/child.visits), child.move))
-        print(results)
+        # print(results)
         result = sorted(results,key=lambda x: x[0], reverse=True)[0]
         # return max(results)[2]
         # return None
